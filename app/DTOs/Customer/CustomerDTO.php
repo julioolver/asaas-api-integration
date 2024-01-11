@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs\Client;
+namespace App\DTOs\Customer;
 
-class ClientDTO
+class CustomerDTO
 {
     public function __construct(
         public string $name,
