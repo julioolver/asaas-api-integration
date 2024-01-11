@@ -23,20 +23,30 @@ class CustomerService
             $customerData = $data->toArray();
             $customer = $this->repository->create($customerData);
 
-            $customerIntegrationId = $this->gateway->createCustomer($data);
+            $customerIntegration = $this->gateway->createCustomer($data);
 
-            if (!$customerIntegrationId) {
-                throw new Exception("Sem ID de integração, tente novamente mais tarde.");
+            if (!$customerIntegration['id']) {
+                throw new Exception('Sem ID de integração, tente novamente mais tarde');
             }
 
-            $customer = $this->repository->updatePaymentGatewayId($customer, $customerIntegrationId["id"]);
+            $customer = $this->repository->updatePaymentGatewayId($customer, $customerIntegration['id']);
 
             DB::commit();
             return $customer;
         } catch (Exception $e) {
             DB::rollBack();
-            // Trate a exceção conforme necessário
             throw $e;
         }
+    }
+
+    public function findByEmail(string $email): Customer|null
+    {
+        $customer = $this->repository->findByEmail($email);
+
+        if (!$customer) {
+            throw new Exception('Usuário não encontrado', 404);
+        }
+
+        return $customer;
     }
 }

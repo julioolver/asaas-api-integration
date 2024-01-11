@@ -25,4 +25,9 @@ class EloquentCustomerRepository implements CustomerRepository
 
         return $customer;
     }
+
+    public function findByEmail(string $email): Customer|null
+    {
+        return $this->model->where('email', $email)->first();
+    }
 }

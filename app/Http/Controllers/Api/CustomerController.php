@@ -44,6 +44,25 @@ class CustomerController extends Controller
 
     public function showByEmail(Request $request)
     {
-        //TODO: find customer by e-mail
+        try {
+            $email = $request->query('email');
+
+            $customer = $this->customerService->findByEmail($email);
+
+            return (new CustomerResource($customer))
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
+
+        } catch (QueryException $e) {
+            return response()->json([
+                'error' => 'Erro na solicitação de dados',
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro interno de servidor',
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }
     }
 }

@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    const MAX_LENGTH_CPF_CNPJ = 14;
-    const MAX_LENGTH_PHONE_NUMBER = 15;
+    const MAX_LENGTH_CPF_CNPJ = 15;
+    const MAX_LENGTH_PHONE_NUMBER = 30;
     /**
      * Run the migrations.
      */
