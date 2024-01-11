@@ -8,7 +8,6 @@ use App\Models\Customer;
 use App\Repositories\contracts\CustomerRepository;
 use App\Services\CustomerService;
 use Mockery;
-use SebastianBergmann\Type\VoidType;
 use Tests\TestCase;
 
 class CustomerServiceTest extends TestCase

@@ -3,7 +3,6 @@
 namespace Tests\Feature\Customer;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
-use Error;
 use Tests\TestCase;
 
 class CreateCustomerTest extends TestCase

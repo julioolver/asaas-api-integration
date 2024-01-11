@@ -4,8 +4,6 @@ namespace App\Integrations\Payments\Asaas;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
-// use GuzzleHttp\Client;
-
 class AsaasHttpClient
 {
     protected PendingRequest $client;
@@ -25,7 +23,7 @@ class AsaasHttpClient
 
     public function get(string $uri, array $options = [])
     {
-        return $this->client->get('GET', $uri, $options);
+        return $this->client->get("{$this->baseURI}/{$uri}", $uri, $options);
     }
 
     public function post($uri, array $data): array
@@ -35,11 +33,11 @@ class AsaasHttpClient
 
     public function put($uri, array $data)
     {
-        return $this->client->request('PUT', $uri, ['json' => $data]);
+        return $this->client->put("{$this->baseURI}/{$uri}", ['json' => $data]);
     }
 
     public function delete($uri, array $data)
     {
-        return $this->client->request('DELETE', $uri, ['json' => $data]);
+        return $this->client->delete("{$this->baseURI}/{$uri}", ['json' => $data]);
     }
 }
