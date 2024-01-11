@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('document_number', self::MAX_LENGTH_CPF_CNPJ);
             $table->string('phone', self::MAX_LENGTH_PHONE_NUMBER)->nullable();
+            $table->string('payment_gateway_id')->nullable();
             $table->timestamps();
         });
     }
