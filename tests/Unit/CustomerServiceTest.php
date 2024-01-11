@@ -3,17 +3,19 @@
 namespace Tests\Unit;
 
 use App\DTOs\Customer\CustomerDTO;
+use App\Integrations\Payments\Contracts\CustomerGatewayInterface;
 use App\Models\Customer;
 use App\Repositories\contracts\CustomerRepository;
 use App\Services\CustomerService;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class CustomerServiceTest extends TestCase
 {
     public function testCreateCustomer(): void
     {
         $customerRepository = Mockery::mock(CustomerRepository::class);
+        $gateayCustomer = Mockery::mock(CustomerGatewayInterface::class);
 
         $customerDTO = new CustomerDTO(
             name: 'John Doe',
@@ -27,12 +29,29 @@ class CustomerServiceTest extends TestCase
             'document_number' => '0000000000',
         ]);
 
-        $customerRepository->shouldReceive('create')
+        $gatewayResponse = [
+            'id' => "34424242424"
+        ];
+
+        $customerRepository->shouldReceive("create")
             ->once()
-            ->with((array) $customerDTO)
+            ->with($customerDTO->toArray())
             ->andReturn($createdCustomer);
 
-        $customerService = new CustomerService($customerRepository);
+        $customerRepository->shouldReceive("updatePaymentGatewayId")
+            ->once()
+            ->with($createdCustomer, $gatewayResponse['id'])
+            ->andReturnUsing(function ($customer, $gatewayId) {
+                $customer->payment_gateway_id = $gatewayId;
+                return $customer;
+            });
+
+        $gateayCustomer->shouldReceive('createCustomer')
+            ->once()
+            ->with($customerDTO)
+            ->andReturn($gatewayResponse);
+
+        $customerService = new CustomerService($customerRepository, $gateayCustomer);
 
         $result = $customerService->create($customerDTO);
 
