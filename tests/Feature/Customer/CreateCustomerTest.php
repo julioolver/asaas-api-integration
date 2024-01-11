@@ -25,13 +25,13 @@ class CreateCustomerTest extends TestCase
 
         $response->assertJsonStructure([
             'data' => [
-                "name",
-                "email",
-                "document_number",
-                "phone",
-                "updated_at",
-                "created_at",
-                "id",
+                'name',
+                'email',
+                'document_number',
+                'phone',
+                'updated_at',
+                'created_at',
+                'id',
             ]
         ]);
     }
@@ -51,8 +51,8 @@ class CreateCustomerTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonStructure([
-            "message",
-            "errors"
+            'message',
+            'errors'
         ]);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Repositories\contracts\CustomerRepository;
 use App\Services\CustomerService;
 use Mockery;
+use SebastianBergmann\Type\VoidType;
 use Tests\TestCase;
 
 class CustomerServiceTest extends TestCase
@@ -30,15 +31,15 @@ class CustomerServiceTest extends TestCase
         ]);
 
         $gatewayResponse = [
-            'id' => "34424242424"
+            'id' => '34424242424'
         ];
 
-        $customerRepository->shouldReceive("create")
+        $customerRepository->shouldReceive('create')
             ->once()
             ->with($customerDTO->toArray())
             ->andReturn($createdCustomer);
 
-        $customerRepository->shouldReceive("updatePaymentGatewayId")
+        $customerRepository->shouldReceive('updatePaymentGatewayId')
             ->once()
             ->with($createdCustomer, $gatewayResponse['id'])
             ->andReturnUsing(function ($customer, $gatewayId) {
@@ -59,6 +60,26 @@ class CustomerServiceTest extends TestCase
         $this->assertEquals('John Doe', $result->name);
         $this->assertEquals('john@doe.com', $result->email);
         $this->assertEquals('0000000000', $result->document_number);
+    }
+
+    public function testFindCustomerByEmail(): void
+    {
+        $repository = Mockery::mock(CustomerRepository::class);
+        $gateayCustomer = Mockery::mock(CustomerGatewayInterface::class);
+
+        $customerCreated = Customer::factory()->create();
+
+        $repository->shouldReceive('findByEmail')
+            ->once()
+            ->with($customerCreated->email)
+            ->andReturn($customerCreated);
+
+        $service = new CustomerService($repository, $gateayCustomer);
+
+        $customerResponse = $service->findByEmail($customerCreated->email);
+
+        $this->assertInstanceOf(Customer::class, $customerResponse);
+        $this->assertEquals($customerCreated->email, $customerResponse->email);
     }
 
     protected function tearDown(): void
