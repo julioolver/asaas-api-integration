@@ -27,7 +27,7 @@ class CustomerController extends Controller
 
             return (new CustomerResource($customer))
                 ->response()
-                ->setStatusCode(201);
+                ->setStatusCode(Response::HTTP_CREATED);
 
         } catch (QueryException $e) {
             return response()->json([
