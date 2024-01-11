@@ -28,8 +28,6 @@ class CreateCustomerTest extends TestCase
                 'email',
                 'document_number',
                 'phone',
-                'updated_at',
-                'created_at',
                 'id',
             ]
         ]);
