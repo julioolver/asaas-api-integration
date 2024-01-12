@@ -44,9 +44,14 @@ class CustomerService
         $customer = $this->repository->findByEmail($email);
 
         if (!$customer) {
-            throw new Exception('Usuário não encontrado', 404);
+            throw new Exception('Cliente não encontrado', 404);
         }
 
         return $customer;
+    }
+
+    public function findById(string $id): Customer
+    {
+        return $this->repository->findById($id);
     }
 }

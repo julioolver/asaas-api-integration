@@ -30,4 +30,9 @@ class EloquentCustomerRepository implements CustomerRepository
     {
         return $this->model->where('email', $email)->first();
     }
+
+    public function findById(string $id): Customer
+    {
+        return $this->model->findOrFail($id);
+    }
 }
