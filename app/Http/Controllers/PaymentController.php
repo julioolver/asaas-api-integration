@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTOs\Payment\PaymentPixDTO;
 use App\Http\Requests\PaymentPixRequest;
+use App\Integrations\Payments\Asaas\AsaasPaymentPixService;
 use App\Models\Payment;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
@@ -27,8 +28,9 @@ class PaymentController extends Controller
     public function processPixPayment(PaymentPixRequest $request)
     {
         $paymentPixDTO = new PaymentPixDTO(...$request->validated());
+        $pixGatewayInstnace = new AsaasPaymentPixService();
 
+        $this->service->setPaymentGateway($pixGatewayInstnace);
         $payment = $this->service->processPixPayment($paymentPixDTO);
-
     }
 }
