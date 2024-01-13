@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\Payment\PaymentPixDTO;
+use App\Factory\PaymentGatewayFactory;
 use App\Http\Requests\PaymentPixRequest;
 use App\Integrations\Payments\Asaas\AsaasPaymentPixService;
-use App\Models\Payment;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 
@@ -14,9 +14,7 @@ class PaymentController extends Controller
     public function __construct(protected PaymentService $service)
     {
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         //
@@ -27,10 +25,12 @@ class PaymentController extends Controller
      */
     public function processPixPayment(PaymentPixRequest $request)
     {
-        $paymentPixDTO = new PaymentPixDTO(...$request->validated());
-        $pixGatewayInstnace = new AsaasPaymentPixService();
+        $validatedData = $request->validated();
+        $validatedData['provider'] = 'asaas';
 
-        $this->service->setPaymentGateway($pixGatewayInstnace);
+        $paymentPixDTO = new PaymentPixDTO(...$validatedData);
         $payment = $this->service->processPixPayment($paymentPixDTO);
+
+        return response()->json($payment);
     }
 }
