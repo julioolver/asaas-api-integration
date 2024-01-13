@@ -11,6 +11,7 @@ class PaymentPixDTO extends BaseDTO
         public string $customer_id,
         public float $amount,
         public string $due_date,
+        public string $provider,
         public string $method = PaymentMethod::PIX->value,
         public string $status = PaymentStatus::PENDING->value,
     ) {
