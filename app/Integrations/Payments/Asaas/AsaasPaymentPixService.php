@@ -3,6 +3,7 @@
 namespace App\Integrations\Payments\Asaas;
 
 use App\Integrations\Payments\Contracts\PaymentGatewayInterface;
+use Exception;
 
 class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayInterface
 {
@@ -13,10 +14,18 @@ class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayIn
             unset($payload['gateway_id']);
         }
 
-        $paymentAsaas = $this->post("payments", $payload);
+        try {
+            $paymentAsaas = $this->post('payments', $payload);
 
-        return [
-            "id" => $paymentAsaas["id"],
-        ];
+            if (!$paymentAsaas['id']) {
+                throw new Exception('Sem ID de integração, tente novamente mais tarde');
+            }
+
+            return [
+                "id" => $paymentAsaas["id"],
+            ];
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }
