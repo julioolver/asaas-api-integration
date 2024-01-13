@@ -20,6 +20,7 @@ class CustomerFactory extends Factory
             "name" => fake()->name(),
             "email" => fake()->email(),
             "document_number" => fake()->numerify('###########'),
+            "payment_gateway_id" => fake()->numerify('###########'),
             "phone" => fake()->phoneNumber(),
         ];
     }
