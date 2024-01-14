@@ -7,19 +7,9 @@ use Exception;
 
 class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayInterface
 {
-    public function createPayment(array $payload): array
+    public function createPayment(array $payload, string $gatewayCustomerId): array
     {
-        if (isset($payload['gateway_id'])) {
-            $payload['customer'] = $payload['gateway_id'];
-            unset($payload['gateway_id']);
-        }
-
-        $dataPayload = [
-            "billingType" => $payload['method'],
-            "customer" => $payload['customer'],
-            'value' => $payload['amount'],
-            'dueDate' => $payload['due_date']
-        ];
+        $dataPayload = $this->makePayloadCreatePayment($payload, $gatewayCustomerId);
 
         try {
             $paymentAsaas = $this->post('payments', $dataPayload);
@@ -36,10 +26,20 @@ class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayIn
         }
     }
 
+    private function makePayloadCreatePayment($payload, $gatewayCustomerId)
+    {
+        return [
+            "billingType" => $payload['method'],
+            "customer" => $gatewayCustomerId,
+            'value' => $payload['amount'],
+            'dueDate' => $payload['due_date']
+        ];
+    }
+
     public function getPaymentDetails(array $payment): array
     {
         try {
-            $paymentId = $payment['id'];
+            $paymentId = $payment['gateway_payment_id'];
 
             $detailPixPayment = $this->get("payments/{$paymentId}/pixQrCode");
 
@@ -48,7 +48,6 @@ class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayIn
                 'pix_key' => $detailPixPayment['payload'],
                 'due_date' => $detailPixPayment['expirationDate']
             ];
-            
         } catch (\Exception $e) {
             throw $e->getMessage();
         }
