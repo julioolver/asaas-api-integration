@@ -1,7 +1,12 @@
 <?php
+
 namespace App\Integrations\Payments\Asaas;
 
+use Exception;
+use GuzzleHttp\Exception\ServerException;
+use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 class AsaasHttpClient
@@ -23,12 +28,27 @@ class AsaasHttpClient
 
     public function get(string $uri, array $options = [])
     {
-        return $this->client->get("{$this->baseURI}/{$uri}", $uri, $options);
+        return $this->client->get("{$this->baseURI}/{$uri}", $uri, $options)->json();
     }
 
-    public function post($uri, array $data): array
+    public function post($uri, array $data)
     {
-        return $this->client->post("{$this->baseURI}/{$uri}", $data)->json();
+        try {
+            $response = $this->client->post("{$this->baseURI}/{$uri}", $data);
+
+            if ($response->failed()) {
+                $errorDetails = $response->json();
+
+                throw new Exception(
+                    'Erro na comunicação com a API externa: ' . json_encode($errorDetails),
+                    $response->status()
+                );
+            }
+
+            return $response->json();
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     public function put($uri, array $data)
