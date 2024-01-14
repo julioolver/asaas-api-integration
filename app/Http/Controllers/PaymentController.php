@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\Payment\PaymentPixDTO;
-use App\Factory\PaymentGatewayFactory;
 use App\Http\Requests\PaymentPixRequest;
-use App\Integrations\Payments\Asaas\AsaasPaymentPixService;
+use App\Http\Resources\PaymentByPixResource;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PaymentController extends Controller
 {
@@ -17,7 +17,7 @@ class PaymentController extends Controller
 
     public function index()
     {
-        //
+        dd('aq');
     }
 
     /**
@@ -25,12 +25,22 @@ class PaymentController extends Controller
      */
     public function processPixPayment(PaymentPixRequest $request)
     {
-        $validatedData = $request->validated();
-        $validatedData['provider'] = 'asaas';
+        try {
+            $validatedData = $request->validated();
+            $validatedData['provider'] = 'asaas';
 
-        $paymentPixDTO = new PaymentPixDTO(...$validatedData);
-        $payment = $this->service->processPixPayment($paymentPixDTO);
+            $paymentPixDTO = new PaymentPixDTO(...$validatedData);
 
-        return response()->json($payment);
+            $payment = $this->service->processPixPayment($paymentPixDTO);
+
+            return (new PaymentByPixResource($payment))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -23,12 +23,34 @@ class CustomerController extends Controller
         try {
             $customerDTO = new CustomerDTO(...$request->validated());
 
+            $customer = $this->customerService->createCustomer($customerDTO);
+
+            return (new CustomerResource($customer))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        } catch (QueryException $e) {
+            return response()->json([
+                'error' => 'Erro na solicitação de dados',
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro interno de servidor',
+                'message' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function storeAndIntegrate(CreateCustomer $request)
+    {
+        try {
+            $customerDTO = new CustomerDTO(...$request->validated());
+
             $customer = $this->customerService->create($customerDTO);
 
             return (new CustomerResource($customer))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
-
         } catch (QueryException $e) {
             return response()->json([
                 'error' => 'Erro na solicitação de dados',
@@ -52,7 +74,6 @@ class CustomerController extends Controller
             return (new CustomerResource($customer))
                 ->response()
                 ->setStatusCode(Response::HTTP_OK);
-
         } catch (QueryException $e) {
             return response()->json([
                 'error' => 'Erro na solicitação de dados',
