@@ -14,18 +14,43 @@ class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayIn
             unset($payload['gateway_id']);
         }
 
+        $dataPayload = [
+            "billingType" => $payload['method'],
+            "customer" => $payload['customer'],
+            'value' => $payload['amount'],
+            'dueDate' => $payload['due_date']
+        ];
+
         try {
-            $paymentAsaas = $this->post('payments', $payload);
+            $paymentAsaas = $this->post('payments', $dataPayload);
 
             if (!$paymentAsaas['id']) {
                 throw new Exception('Sem ID de integração, tente novamente mais tarde');
             }
 
             return [
-                "id" => $paymentAsaas["id"],
+                "gateway_payment_id" => $paymentAsaas["id"],
             ];
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
+        }
+    }
+
+    public function getPaymentDetails(array $payment): array
+    {
+        try {
+            $paymentId = $payment['id'];
+
+            $detailPixPayment = $this->get("payments/{$paymentId}/pixQrCode");
+
+            return [
+                'qrcode' => $detailPixPayment['encodedImage'],
+                'pix_key' => $detailPixPayment['payload'],
+                'due_date' => $detailPixPayment['expirationDate']
+            ];
+            
+        } catch (\Exception $e) {
+            throw $e->getMessage();
         }
     }
 }
