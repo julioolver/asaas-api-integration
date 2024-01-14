@@ -35,6 +35,7 @@ class PaymentService
             if ($dto->method !== PaymentMethod::PIX->value) {
                 throw new Exception('Método de pagamento incompatível com a função');
             }
+
             $this->gateway = $this->getGateway($dto->provider, $dto->method);
 
             $customer = $this->customerService->findById($dto->customer_id);
@@ -44,10 +45,20 @@ class PaymentService
             $data = (clone $dto)->toArray();
             $payment = $this->repository->processPixPayment($data);
 
-            $data["gateway_id"] = $customer->payment_gateway_id;
-
+            $data["gateway_id"] = $customer->gateway_customer_id;
 
             $paymentIntegration = $this->gateway->createPayment($data);
+
+            $pixDetails = $this->getDataPix([
+                'id' => $paymentIntegration['gateway_payment_id']
+            ]);
+
+            $dataToUpdatePayment = [
+                'gateway_payment_id' => $paymentIntegration['gateway_payment_id'],
+                'pix_data' => json_encode($pixDetails),
+            ];
+
+            return $this->update($payment->id, $dataToUpdatePayment);
 
             DB::commit();
 
@@ -56,5 +67,19 @@ class PaymentService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function getDataPix(array $paymentPix)
+    {
+        if (!isset($paymentPix['id'])) {
+            throw new Exception('Sem ID de integração, tente novamente mais tarde.');
+        }
+
+        return $this->gateway->getPaymentDetails($paymentPix);
+    }
+
+    public function update(int $id, array $data): Payment
+    {
+        return $this->repository->update($id, $data);
     }
 }
