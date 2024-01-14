@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DTOs\Payment;
 
 use App\DTOs\BaseDTO;
@@ -12,8 +13,12 @@ class PaymentPixDTO extends BaseDTO
         public float $amount,
         public string $due_date,
         public string $provider,
-        public string $method = PaymentMethod::PIX->value,
-        public string $status = PaymentStatus::PENDING->value,
+        public ?string $method,
+        public ?string $status,
     ) {
+        {
+            $this->method = $method ?? PaymentMethod::PIX->value;
+            $this->status = $status ?? PaymentStatus::PENDING->value;
+        }
     }
 }
