@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CustomerController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('customers/by-email', [CustomerController::class, 'showByEmail']);

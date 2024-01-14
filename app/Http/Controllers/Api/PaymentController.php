@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\DTOs\Payment\PaymentPixDTO;
 use App\Http\Requests\PaymentPixRequest;
 use App\Http\Resources\PaymentByPixResource;

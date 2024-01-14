@@ -4,7 +4,6 @@ namespace App\Factory;
 
 use App\Config\PaymentGatewayConfig;
 use App\Enums\PaymentGateways;
-use App\Enums\PaymentMethod;
 use App\Integrations\Payments\Contracts\PaymentGatewayInterface;
 use Exception;
 use Illuminate\Http\Response;

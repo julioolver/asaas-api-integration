@@ -13,8 +13,8 @@ class PaymentPixDTO extends BaseDTO
         public float $amount,
         public string $due_date,
         public string $provider,
-        public ?string $method,
-        public ?string $status,
+        public ?string $method = null,
+        public ?string $status = null,
     ) {
         {
             $this->method = $method ?? PaymentMethod::PIX->value;
