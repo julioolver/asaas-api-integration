@@ -42,7 +42,7 @@ class PaymentServiceTest extends TestCase
             ->andReturn($customerCreated);
 
         $payloadPix = new PaymentPixDTO(
-            customer_id: 1,
+            customer_id: $customerCreated->id,
             amount: 4540,
             due_date: '2024-01-15',
             provider: 'asaas',
@@ -50,11 +50,12 @@ class PaymentServiceTest extends TestCase
         );
 
         $responsePix = new Payment($payloadPix->toArray());
+        $responsePix->id = 1;
 
         $paymentRepository->shouldReceive("processPixPayment")
             ->once()
             ->with([
-                'customer_id' => '1',
+                'customer_id' => $customerCreated->id,
                 'amount' => 4540,
                 'due_date' => '2024-01-15',
                 'provider' => 'asaas',
@@ -63,30 +64,26 @@ class PaymentServiceTest extends TestCase
             ])
             ->andReturn($responsePix);
 
+        $paymentRepository->shouldReceive("update")
+            ->once()
+            ->andReturn($responsePix);
+
         $asaasServiceMock->shouldReceive('createPayment')
             ->once()
             ->with([
-                'customer_id' => '1', // Ou o valor apropriado
+                'customer_id' => $customerCreated->id,
                 'amount' => 4540,
                 'due_date' => '2024-01-15',
                 'provider' => 'asaas',
                 'method' => 'pix',
                 'status' => 'pending',
-                'gateway_id' => $customerCreated->payment_gateway_id
+                'gateway_id' => $customerCreated->gateway_customer_id
             ])
-            ->andReturn(['id' => '1234']);
+            ->andReturn(['gateway_payment_id' => '1234']);
 
-        // $asaasServiceMock->shouldReceive('post')
-        //     ->once()
-        //     ->with('payments', [
-        //         'customer' => $customerCreated->payment_gateway_id,
-        //         'amount' => 4540,
-        //         'due_date' => '2024-01-15',
-        //         'provider' => 'asaas',
-        //         'method' => 'pix',
-        //         'status' => 'pending',
-        //     ])
-        //     ->andReturn(['id' => '1234']);
+        $asaasServiceMock->shouldReceive('getPaymentDetails')
+            ->once()
+            ->andReturn(['qrcode' => '1234', 'pix_key' => 'pix_key_data', 'due_date' => '2024-01-15']);
 
         $paymentGatewayFactory->shouldReceive('handle')
             ->with('asaas', 'pix')
@@ -105,17 +102,16 @@ class PaymentServiceTest extends TestCase
     public function testErrorInReturnIdPaymentByPix(): void
     {
         $this->expectException(Exception::class);
-        //$this->expectExceptionMessage('Sem ID de integração, tente novamente mais tarde');
 
         $paymentRepository = Mockery::mock(PaymentRepository::class);
-        $customerRepository = Mockery::mock(CustomerRepository::class);
+        $customerRepositoryMock = Mockery::mock(CustomerRepository::class);
         $customerGateway = Mockery::mock(CustomerGatewayInterface::class);
         $asaasServiceMock = Mockery::mock(AsaasPaymentPixService::class);
         $paymentGatewayFactory = Mockery::mock(PaymentGatewayFactory::class);
 
         $customerCreated = Customer::factory()->create();
 
-        $customerRepository->shouldReceive('findById')
+        $customerRepositoryMock->shouldReceive('findById')
             ->once()
             ->with('1')
             ->andReturn($customerCreated);
@@ -145,13 +141,13 @@ class PaymentServiceTest extends TestCase
         $asaasServiceMock->shouldReceive('createPayment')
             ->once()
             ->with([
-                'customer_id' => 1,
+                'customer_id' => '1',
                 'amount' => 4540,
                 'due_date' => '2024-01-15',
                 'provider' => 'asaas',
                 'method' => 'pix',
                 'status' => 'pending',
-                'gateway_id' => $customerCreated->payment_gateway_id
+                'gateway_id' => $customerCreated->gateway_customer_id
             ])
             ->andThrow(Exception::class);
 
@@ -161,7 +157,7 @@ class PaymentServiceTest extends TestCase
             ->andReturn($asaasServiceMock);
 
 
-        $customerService = new CustomerService($customerRepository, $customerGateway);
+        $customerService = new CustomerService($customerRepositoryMock, $customerGateway);
         $paymentService = new PaymentService($paymentRepository, $customerService, $paymentGatewayFactory);
 
         $paymentService->processPixPayment($payloadPix);
@@ -194,5 +190,6 @@ class PaymentServiceTest extends TestCase
     protected function tearDown(): void
     {
         Mockery::close();
+        parent::tearDown();
     }
 }
