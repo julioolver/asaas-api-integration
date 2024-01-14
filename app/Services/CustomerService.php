@@ -15,13 +15,13 @@ class CustomerService
     public function __construct(protected CustomerRepository $repository, protected CustomerGatewayInterface $gateway)
     {
     }
+
     public function create(CustomerDTO $data): Customer
     {
         try {
             DB::beginTransaction();
 
-            $customerData = $data->toArray();
-            $customer = $this->repository->create($customerData);
+            $customer = $this->createCustomer($data);
 
             $customerIntegration = $this->gateway->createCustomer($data);
 
@@ -37,6 +37,12 @@ class CustomerService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function createCustomer(CustomerDTO $data): Customer
+    {
+        $customerData = $data->toArray();
+        return $this->repository->create($customerData);
     }
 
     public function findByEmail(string $email): Customer|null
