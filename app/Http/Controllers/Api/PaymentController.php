@@ -19,7 +19,7 @@ class PaymentController extends Controller
 
     public function index()
     {
-        dd('aq');
+        //TODO: create index
     }
 
     /**

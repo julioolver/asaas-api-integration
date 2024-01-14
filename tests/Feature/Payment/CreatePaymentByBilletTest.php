@@ -40,8 +40,6 @@ class CreatePaymentByBilletTest extends TestCase
 
         $response = $this->postJson('/api/payments/billet', $payloadPix);
 
-        dd($response->json());
-
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure([
             'data' => [
