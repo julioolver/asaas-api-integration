@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('amount');
             $table->string('method');
             $table->string('status')->default(PaymentStatus::PENDING);
-            $table->string('payment_gateway_id')->nullable();
+            $table->string('gateway_payment_id')->nullable();
             $table->string('boleto_url')->nullable();
             $table->text('pix_data')->nullable();
             $table->string('card_authorization_number')->nullable();
