@@ -44,6 +44,7 @@ class CreatePaymentByPìxTest extends TestCase
 
         $response = $this->postJson('/api/payments/pix', $payloadPix);
 
+        $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure([
             'data' => [
                 'amount',
@@ -53,6 +54,5 @@ class CreatePaymentByPìxTest extends TestCase
                 'status'
             ]
         ]);
-        $response->assertStatus(Response::HTTP_CREATED);
     }
 }
