@@ -2,23 +2,8 @@
 
 namespace App\DTOs\Payment;
 
-use App\DTOs\BaseDTO;
-use App\Enums\PaymentMethod;
-use App\Enums\PaymentStatus;
+use App\Enums\PaymentGateways;
 
-class PaymentPixDTO extends BaseDTO
+class PaymentPixDTO extends BasePaymentDTO implements PaymentDTOInterface
 {
-    public function __construct(
-        public string $customer_id,
-        public float $amount,
-        public string $due_date,
-        public string $provider,
-        public ?string $method = null,
-        public ?string $status = null,
-    ) {
-        {
-            $this->method = $method ?? PaymentMethod::PIX->value;
-            $this->status = $status ?? PaymentStatus::PENDING->value;
-        }
-    }
 }
