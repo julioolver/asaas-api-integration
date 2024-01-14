@@ -11,7 +11,7 @@ class PaymentPixRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class PaymentPixRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "customer_id" => "required|string|exists:customers,id",
+            "customer_id" => "required|exists:customers,id",
             "amount" => "required|numeric",
             "due_date" => "required|string|date",
             "method" => "required|string",
