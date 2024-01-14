@@ -39,7 +39,7 @@ class PaymentService
             $this->gateway = $this->getGateway($dto->provider, $dto->method);
 
             $customer = $this->customerService->findById($dto->customer_id);
-
+            
             DB::beginTransaction();
 
             $data = (clone $dto)->toArray();

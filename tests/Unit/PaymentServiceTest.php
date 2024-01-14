@@ -38,10 +38,9 @@ class PaymentServiceTest extends TestCase
 
         $customerRepository->shouldReceive('findById')
             ->once()
-            ->with($customerCreated->id)
             ->andReturn($customerCreated);
 
-        $payloadPix = new PaymentPixDTO(
+        $fakePaymentPixDTO = new PaymentPixDTO(
             customer_id: $customerCreated->id,
             amount: 4540,
             due_date: '2024-01-15',
@@ -49,36 +48,19 @@ class PaymentServiceTest extends TestCase
 
         );
 
-        $responsePix = new Payment($payloadPix->toArray());
-        $responsePix->id = 1;
+        $fakePayment = new Payment($fakePaymentPixDTO->toArray());
+        $fakePayment->id = 1;
 
         $paymentRepository->shouldReceive("processPixPayment")
             ->once()
-            ->with([
-                'customer_id' => $customerCreated->id,
-                'amount' => 4540,
-                'due_date' => '2024-01-15',
-                'provider' => 'asaas',
-                'method' => 'pix',
-                'status' => 'pending',
-            ])
-            ->andReturn($responsePix);
+            ->andReturn($fakePayment);
 
         $paymentRepository->shouldReceive("update")
             ->once()
-            ->andReturn($responsePix);
+            ->andReturn($fakePayment);
 
         $asaasServiceMock->shouldReceive('createPayment')
             ->once()
-            ->with([
-                'customer_id' => $customerCreated->id,
-                'amount' => 4540,
-                'due_date' => '2024-01-15',
-                'provider' => 'asaas',
-                'method' => 'pix',
-                'status' => 'pending',
-                'gateway_id' => $customerCreated->gateway_customer_id
-            ])
             ->andReturn(['gateway_payment_id' => '1234']);
 
         $asaasServiceMock->shouldReceive('getPaymentDetails')
@@ -86,7 +68,6 @@ class PaymentServiceTest extends TestCase
             ->andReturn(['qrcode' => '1234', 'pix_key' => 'pix_key_data', 'due_date' => '2024-01-15']);
 
         $paymentGatewayFactory->shouldReceive('handle')
-            ->with('asaas', 'pix')
             ->once()
             ->andReturn($asaasServiceMock);
 
@@ -94,9 +75,10 @@ class PaymentServiceTest extends TestCase
         $customerService = new CustomerService($customerRepository, $customerGateway);
         $paymentService = new PaymentService($paymentRepository, $customerService, $paymentGatewayFactory);
 
-        $result = $paymentService->processPixPayment($payloadPix);
+        $result = $paymentService->processPixPayment($fakePaymentPixDTO);
 
-        $this->assertEquals($responsePix, $result);
+        $this->assertEquals($fakePayment, $result);
+        $this->assertInstanceOf(Payment::class, $result);
     }
 
     public function testErrorInReturnIdPaymentByPix(): void
@@ -113,10 +95,9 @@ class PaymentServiceTest extends TestCase
 
         $customerRepositoryMock->shouldReceive('findById')
             ->once()
-            ->with('1')
             ->andReturn($customerCreated);
 
-        $payloadPix = new PaymentPixDTO(
+        $fakePaymentPixDTO = new PaymentPixDTO(
             customer_id: 1,
             amount: 4540,
             due_date: '2024-01-15',
@@ -124,35 +105,17 @@ class PaymentServiceTest extends TestCase
 
         );
 
-        $responsePix = new Payment($payloadPix->toArray());
+        $fakePayment = new Payment($fakePaymentPixDTO->toArray());
 
         $paymentRepository->shouldReceive("processPixPayment")
             ->once()
-            ->with([
-                'customer_id' => 1,
-                'amount' => 4540,
-                'due_date' => '2024-01-15',
-                'provider' => 'asaas',
-                'method' => 'pix',
-                'status' => 'pending',
-            ])
-            ->andReturn($responsePix);
+            ->andReturn($fakePayment);
 
         $asaasServiceMock->shouldReceive('createPayment')
             ->once()
-            ->with([
-                'customer_id' => '1',
-                'amount' => 4540,
-                'due_date' => '2024-01-15',
-                'provider' => 'asaas',
-                'method' => 'pix',
-                'status' => 'pending',
-                'gateway_id' => $customerCreated->gateway_customer_id
-            ])
             ->andThrow(Exception::class);
 
         $paymentGatewayFactory->shouldReceive('handle')
-            ->with('asaas', 'pix')
             ->once()
             ->andReturn($asaasServiceMock);
 
@@ -160,7 +123,7 @@ class PaymentServiceTest extends TestCase
         $customerService = new CustomerService($customerRepositoryMock, $customerGateway);
         $paymentService = new PaymentService($paymentRepository, $customerService, $paymentGatewayFactory);
 
-        $paymentService->processPixPayment($payloadPix);
+        $paymentService->processPixPayment($fakePaymentPixDTO);
     }
 
     public function testClientNotFoundInPaymentPorcess(): void

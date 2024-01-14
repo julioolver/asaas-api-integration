@@ -15,8 +15,9 @@ use Tests\TestCase;
 class CreatePaymentByPìxTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
-     * A basic feature test example.
+     * it should be able to create payment by pix.
      */
     public function testCreatePaymentByPix(): void
     {
