@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\DTOs\Payment\PaymentPixDTO;
+use App\Enums\PaymentMethod;
 use App\Factory\PaymentGatewayFactory;
 use App\Integrations\Payments\Asaas\AsaasPaymentPixService;
 use App\Integrations\Payments\Contracts\CustomerGatewayInterface;
@@ -45,7 +46,7 @@ class PaymentServiceTest extends TestCase
             amount: 4540,
             due_date: '2024-01-15',
             provider: 'asaas',
-
+            method: PaymentMethod::PIX->value
         );
 
         $fakePayment = new Payment($fakePaymentPixDTO->toArray());
@@ -102,7 +103,7 @@ class PaymentServiceTest extends TestCase
             amount: 4540,
             due_date: '2024-01-15',
             provider: 'asaas',
-
+            method: PaymentMethod::PIX->value
         );
 
         $fakePayment = new Payment($fakePaymentPixDTO->toArray());
@@ -142,6 +143,7 @@ class PaymentServiceTest extends TestCase
             amount: 4540,
             due_date: '2024-01-15',
             provider: 'asaas',
+            method: PaymentMethod::PIX->value
         );
 
         $paymentService = new PaymentService($paymentRepositoryMock, $customerServiceMock, $paymentGatewayFactory);

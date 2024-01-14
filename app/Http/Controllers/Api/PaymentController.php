@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTOs\Payment\PaymentByBilletDTO;
 use App\Http\Controllers\Controller;
 use App\DTOs\Payment\PaymentPixDTO;
 use App\Http\Requests\PaymentPixRequest;
@@ -18,7 +19,7 @@ class PaymentController extends Controller
 
     public function index()
     {
-        dd('aq');
+        //TODO: create index
     }
 
     /**
@@ -33,6 +34,27 @@ class PaymentController extends Controller
             $paymentPixDTO = new PaymentPixDTO(...$validatedData);
 
             $payment = $this->service->processPixPayment($paymentPixDTO);
+
+            return (new PaymentByPixResource($payment))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function processPaymentByBillet(PaymentPixRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            $validatedData['provider'] = 'asaas';
+
+            $paymentPixDTO = new PaymentByBilletDTO(...$validatedData);
+
+            $payment = $this->service->processBilletPayment($paymentPixDTO);
 
             return (new PaymentByPixResource($payment))
                 ->response()

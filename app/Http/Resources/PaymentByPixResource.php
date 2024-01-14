@@ -19,7 +19,9 @@ class PaymentByPixResource extends JsonResource
             'method' => $this->method,
             'pix_details' => $this->pix_data,
             'due_date' => $this->due_date,
-            'status' => $this->status
+            'status' => $this->status,
+            'bank_url' => $this->bank_url,
+            'invoice_url' => $this->invoice_url,
         ];
     }
 }

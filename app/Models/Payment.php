@@ -18,7 +18,8 @@ class Payment extends Model
         "method",
         "status",
         "gateway_payment_id",
-        "boleto_url",
+        "bank_url",
+        "invoice_url",
         "pix_data",
         "card_authorization_number",
         "due_date"
@@ -32,7 +33,7 @@ class Payment extends Model
     protected function pixData(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => json_decode($value, true),
+            get: fn (?string $value) => $value ? json_decode($value, true) : null,
         );
     }
 }
