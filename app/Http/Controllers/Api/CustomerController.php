@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCustomer;
 use App\Http\Resources\CustomerResource;
 use App\Services\CustomerService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -79,6 +80,12 @@ class CustomerController extends Controller
                 'error' => 'Erro na solicitação de dados',
                 'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
+        } catch (ModelNotFoundException $modelException) {
+            return response()->json([
+                'error' => 'Dados não encontrados',
+                'message' => $modelException->getMessage()
+            ], Response::HTTP_NOT_FOUND);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro interno de servidor',
