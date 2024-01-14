@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('method');
             $table->string('status')->default(PaymentStatus::PENDING);
             $table->string('gateway_payment_id')->nullable();
-            $table->string('boleto_url')->nullable();
+            $table->string('bank_url')->nullable();
+            $table->string('invoice_url')->nullable();
             $table->text('pix_data')->nullable();
             $table->string('card_authorization_number')->nullable();
             $table->date('due_date')->nullable();
