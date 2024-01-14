@@ -11,7 +11,9 @@ use App\Integrations\Payments\Contracts\{
     PaymentGatewayInterface
 };
 use App\Repositories\contracts\CustomerRepository;
+use App\Repositories\contracts\PaymentRepository;
 use App\Repositories\eloquent\EloquentCustomerRepository;
+use App\Repositories\eloquent\EloquentPaymentRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CustomerRepository::class, EloquentCustomerRepository::class);
+        $this->app->bind(PaymentRepository::class, EloquentPaymentRepository::class);
+
         $this->app->bind(CustomerGatewayInterface::class, AsaasCustomerService::class);
         $this->app->bind(PaymentGatewayInterface::class, AsaasPaymentPixService::class);
         $this->app->bind(CustomerGatewayInterface::class, AsaasCustomerService::class);
