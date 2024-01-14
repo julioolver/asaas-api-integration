@@ -15,13 +15,13 @@ class CustomerService
     public function __construct(protected CustomerRepository $repository, protected CustomerGatewayInterface $gateway)
     {
     }
+
     public function create(CustomerDTO $data): Customer
     {
         try {
             DB::beginTransaction();
 
-            $customerData = $data->toArray();
-            $customer = $this->repository->create($customerData);
+            $customer = $this->createCustomer($data);
 
             $customerIntegration = $this->gateway->createCustomer($data);
 
@@ -39,14 +39,25 @@ class CustomerService
         }
     }
 
+    public function createCustomer(CustomerDTO $data): Customer
+    {
+        $customerData = $data->toArray();
+        return $this->repository->create($customerData);
+    }
+
     public function findByEmail(string $email): Customer|null
     {
         $customer = $this->repository->findByEmail($email);
 
         if (!$customer) {
-            throw new Exception('Usuário não encontrado', 404);
+            throw new Exception('Cliente não encontrado', 404);
         }
 
         return $customer;
+    }
+
+    public function findById(string $id): Customer
+    {
+        return $this->repository->findById($id);
     }
 }

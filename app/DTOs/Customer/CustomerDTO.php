@@ -1,8 +1,9 @@
 <?php
 
 namespace App\DTOs\Customer;
+use App\DTOs\BaseDTO;
 
-class CustomerDTO
+class CustomerDTO extends BaseDTO
 {
     public function __construct(
         public string $name,
@@ -10,10 +11,5 @@ class CustomerDTO
         public string $document_number,
         public ?string $phone = null,
     ) {
-    }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
     }
 }

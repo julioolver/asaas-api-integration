@@ -14,6 +14,6 @@ class Customer extends Model
         "email",
         "document_number",
         "phone",
-        "payment_gateway_id"
+        "gateway_customer_id"
     ];
 }

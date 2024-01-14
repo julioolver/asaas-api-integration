@@ -1,7 +1,10 @@
 <?php
+
 namespace App\Integrations\Payments\Asaas;
 
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class AsaasHttpClient
@@ -23,12 +26,20 @@ class AsaasHttpClient
 
     public function get(string $uri, array $options = [])
     {
-        return $this->client->get("{$this->baseURI}/{$uri}", $uri, $options);
+        try {
+            $response = $this->client->get("{$this->baseURI}/{$uri}", $uri, $options);
+
+            return $this->responseTratament($response);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
-    public function post($uri, array $data): array
+    public function post($uri, array $data)
     {
-        return $this->client->post("{$this->baseURI}/{$uri}", $data)->json();
+        $response = $this->client->post("{$this->baseURI}/{$uri}", $data);
+
+        return $this->responseTratament($response);
     }
 
     public function put($uri, array $data)
@@ -39,5 +50,23 @@ class AsaasHttpClient
     public function delete($uri, array $data)
     {
         return $this->client->delete("{$this->baseURI}/{$uri}", ['json' => $data]);
+    }
+
+    private function responseTratament(Response $response)
+    {
+        try {
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            $errorDetails = $response->json();
+
+            throw new Exception(
+                'Erro na comunicação com a API externa: ' . json_encode($errorDetails),
+                $response->status()
+            );
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 }

@@ -11,6 +11,9 @@ class AsaasCustomerService extends AsaasHttpClient implements CustomerGatewayInt
     {
         $customerData = $customer->toArray();
 
+        $customerData['cpfCnpj'] = $customerData['document_number'];
+        unset($customerData['document_number']);
+
         $customerAsaas = $this->post("customers", $customerData);
 
         return [

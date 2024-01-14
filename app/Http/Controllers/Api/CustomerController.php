@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCustomer;
 use App\Http\Resources\CustomerResource;
 use App\Services\CustomerService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -23,12 +24,34 @@ class CustomerController extends Controller
         try {
             $customerDTO = new CustomerDTO(...$request->validated());
 
+            $customer = $this->customerService->createCustomer($customerDTO);
+
+            return (new CustomerResource($customer))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        } catch (QueryException $e) {
+            return response()->json([
+                'error' => 'Erro na solicitação de dados',
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro interno de servidor',
+                'message' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function storeAndIntegrate(CreateCustomer $request)
+    {
+        try {
+            $customerDTO = new CustomerDTO(...$request->validated());
+
             $customer = $this->customerService->create($customerDTO);
 
             return (new CustomerResource($customer))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
-
         } catch (QueryException $e) {
             return response()->json([
                 'error' => 'Erro na solicitação de dados',
@@ -52,12 +75,17 @@ class CustomerController extends Controller
             return (new CustomerResource($customer))
                 ->response()
                 ->setStatusCode(Response::HTTP_OK);
-
         } catch (QueryException $e) {
             return response()->json([
                 'error' => 'Erro na solicitação de dados',
                 'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
+        } catch (ModelNotFoundException $modelException) {
+            return response()->json([
+                'error' => 'Dados não encontrados',
+                'message' => $modelException->getMessage()
+            ], Response::HTTP_NOT_FOUND);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro interno de servidor',

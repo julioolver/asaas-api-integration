@@ -18,7 +18,7 @@ class AsaasCustomerServiceTest extends TestCase
         $customerDTO = new CustomerDTO(
             name: $customer->name,
             email: $customer->email,
-            document_number: $customer->document_number
+            document_number: '34748015039' // utilizado https://www.4devs.com.br/gerador_de_cpf
         );
 
         $asaasCustomerService = new AsaasCustomerService();

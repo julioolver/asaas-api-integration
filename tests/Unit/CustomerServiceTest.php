@@ -42,7 +42,7 @@ class CustomerServiceTest extends TestCase
             ->once()
             ->with($createdCustomer, $gatewayResponse['id'])
             ->andReturnUsing(function ($customer, $gatewayId) {
-                $customer->payment_gateway_id = $gatewayId;
+                $customer->gateway_payment_id = $gatewayId;
                 return $customer;
             });
 
