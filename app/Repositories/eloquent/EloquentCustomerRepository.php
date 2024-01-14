@@ -19,7 +19,7 @@ class EloquentCustomerRepository implements CustomerRepository
 
     public function updatePaymentGatewayId(Customer $customer, string $paymentId): Customer
     {
-        $customer->payment_gateway_id = $paymentId;
+        $customer->gateway_payment_id = $paymentId;
 
         $customer->save();
 

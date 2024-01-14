@@ -16,4 +16,17 @@ class EloquentPaymentRepository implements PaymentRepository
     {
         return $this->model->create($payload);
     }
+
+    public function findById(int $id): Payment
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function update(int $id, array $data): Payment
+    {
+        $model = $this->findById($id);
+        $model->update($data);
+
+        return $model;
+    }
 }
