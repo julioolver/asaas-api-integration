@@ -20,11 +20,6 @@ class PaymentController extends Controller
     {
     }
 
-    public function index()
-    {
-        //TODO: create index
-    }
-
     /**
      * Store a newly created resource in storage.
      */
