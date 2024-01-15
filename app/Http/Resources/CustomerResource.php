@@ -20,7 +20,7 @@ class CustomerResource extends JsonResource
             "email" => $this->email,
             "document_number" => $this->document_number,
             "phone" => $this->phone,
-            "gateway_payment_id" => $this->gateway_payment_id,
+            "gateway_customer_id" => $this->gateway_customer_id,
         ];
     }
 }
