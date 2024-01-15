@@ -12,5 +12,6 @@ Route::resource('customers', CustomerController::class);
 Route::group(['prefix' => 'payments'], function () {
     Route::post('pix', [PaymentController::class, 'processPixPayment']);
     Route::post('billet', [PaymentController::class, 'processPaymentByBillet']);
+    Route::post('credit-card', [PaymentController::class, 'processPaymentByCreditCard']);
 });
 
