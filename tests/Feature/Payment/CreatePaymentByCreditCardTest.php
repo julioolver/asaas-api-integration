@@ -12,14 +12,14 @@ use Illuminate\Http\Response;
 use Mockery;
 use Tests\TestCase;
 
-class CreatePaymentByPìxTest extends TestCase
+class CreatePaymentByCreditCardTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
      * it should be able to create payment by pix.
      */
-    public function testCreatePaymentByPix(): void
+    public function CreatePaymentByCreditCard(): void
     {
         $customerData = [
             'name' => 'Test Customer',
@@ -57,7 +57,7 @@ class CreatePaymentByPìxTest extends TestCase
         ]);
     }
 
-    public function testValidationCreatePaymentByPixErrorInExternalApi(): void
+    public function ValidationCreatePaymentByCreditCardErrorInExternalApi(): void
     {
         $customerData = [
             'name' => 'Test Customer',
@@ -85,27 +85,13 @@ class CreatePaymentByPìxTest extends TestCase
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         $response->assertJsonStructure([
-           'success',
-           'message'
+            'success',
+            'message'
         ]);
     }
 
-    public function testErrorValidationCreatePaymentByPix(): void
+    public function testErrorValidationCreatePaymentByCreditCard(): void
     {
-        $customerData = [
-            'name' => 'Test Customer',
-            'document_number' => '34748015039' // utilizado https://www.4devs.com.br/gerador_de_cpf
-        ];
-
-        $customer = Customer::factory()->create();
-        $customer->gateway_customer_id = 'invalid_customer_gateway-id';
-
-        $customerService = new EloquentCustomerRepository(new Customer());
-
-        $customerResponse = $customerService->create($customer->toArray());
-
-        $response = $this->postJson('/api/customers', $customerData);
-
         $payloadPix = [
             "customer_id" => 'invalid_id',
             "amount" => 4540.33,
@@ -117,8 +103,8 @@ class CreatePaymentByPìxTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonStructure([
-           'errors',
-           'message'
+            'errors',
+            'message'
         ]);
     }
 }
