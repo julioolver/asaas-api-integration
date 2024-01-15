@@ -18,23 +18,13 @@ class CreatePaymentByCreditCardTest extends TestCase
      */
     public function testCreatePaymentByCreditCard(): void
     {
-        $customerData = [
-            'name' => 'Test Customer',
-            'email' => 'customer@example.com',
-            'document_number' => '34748015039' // utilizado https://www.4devs.com.br/gerador_de_cpf
-        ];
-
         $customer = Customer::factory()->create();
-        $customer->gateway_customer_id = 'cus_000005844687';
+        $customer->document_number = '34748015039'; // utilizado https://www.4devs.com.br/gerador_de_cpf
 
-        $customerService = new EloquentCustomerRepository(new Customer());
-
-        $customerResponse = $customerService->create($customer->toArray());
-
-        $response = $this->postJson('/api/customers', $customerData);
+        $customerResponse = $this->postJson('/api/customers/integrate', $customer->toArray())->json();
 
         $payloadCreditCard = [
-            'customer_id' => $customerResponse->id,
+            'customer_id' => $customerResponse['data']['id'],
             'amount' => 4540.33,
             'due_date' => '2024-01-15',
             'method' => 'credit-card',
@@ -48,8 +38,8 @@ class CreatePaymentByCreditCardTest extends TestCase
                 'cvv' => 669
             ],
             'holder_info' => [
-                'name' => $customerResponse->name,
-                'email' => $customerResponse->email,
+                'name' => $customer->name,
+                'email' => $customer->email,
                 'document_number' => '34748015039',
                 'postal_code' => '99150000',
                 'address_number' => '123',
