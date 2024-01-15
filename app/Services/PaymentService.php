@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\Payment\PaymentByBilletDTO;
+use App\DTOs\Payment\PaymentCreditCardDTO;
 use App\DTOs\Payment\PaymentDTOInterface;
 use App\DTOs\Payment\PaymentPixDTO;
 use App\Factory\PaymentGatewayFactory;
@@ -54,6 +55,28 @@ class PaymentService
         });
     }
 
+    public function processCreditCardPayment(PaymentCreditCardDTO $dto)
+    {
+        $currentYear = date('Y');
+        if ($currentYear < $dto->creditCard->expiry_year) {
+            throw new Exception('Ano informado experido.', 422);
+        }
+
+        $dataForDb = clone $dto;
+        unset($dataForDb->creditCard, $dataForDb->holderInfo);
+
+        return DB::transaction(function () use ($dto, $dataForDb) {
+            $customer = $this->initializePaymentProcess($dto, 'boleto');
+            $payment = $this->processPaymentInRepository($dataForDb, $customer);
+
+            $paymentIntegration = $this->gateway->createPayment($dto->toArray(), $customer->gateway_customer_id);
+
+            $creditCardDetails = $this->getDetails($paymentIntegration, 'credit_card');
+
+            return $this->update($payment->id, $creditCardDetails);
+        });
+    }
+
     public function update(int $id, array $data): Payment
     {
         return $this->repository->update($id, $data);
@@ -78,7 +101,7 @@ class PaymentService
         $paymentData = (clone $dto)->toArray();
         $paymentData["gateway_customer_id"] = $customer->gateway_customer_id;
 
-        return $this->repository->processPixPayment($paymentData);
+        return $this->repository->createPayment($paymentData);
     }
 
     private function validatePaymentMethod(PaymentDTOInterface $dto, string $type)
