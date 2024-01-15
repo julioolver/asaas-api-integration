@@ -42,7 +42,6 @@ class PaymentService
 
     public function processBilletPayment(PaymentByBilletDTO $dto): Payment
     {
-
         return DB::transaction(function () use ($dto) {
             $customer = $this->initializePaymentProcess($dto, 'boleto');
             $payment = $this->processPaymentInRepository($dto, $customer);
@@ -57,21 +56,24 @@ class PaymentService
 
     public function processCreditCardPayment(PaymentCreditCardDTO $dto)
     {
-        $currentYear = date('Y');
-        if ($currentYear < $dto->creditCard->expiry_year) {
-            throw new Exception('Ano informado experido.', 422);
+        $currentYear = (int) date('Y');
+
+        if ($currentYear > (int) $dto->creditCard->expiry_year || (int) $dto->creditCard->expiry_month > 12) {
+            throw new Exception('Data do cartão de crédito incorreta.', 422);
         }
 
         $dataForDb = clone $dto;
+
+        // unset para não salvar dados no banco de dados
         unset($dataForDb->creditCard, $dataForDb->holderInfo);
 
         return DB::transaction(function () use ($dto, $dataForDb) {
-            $customer = $this->initializePaymentProcess($dto, 'boleto');
+            $customer = $this->initializePaymentProcess($dto, 'credit-card');
             $payment = $this->processPaymentInRepository($dataForDb, $customer);
 
             $paymentIntegration = $this->gateway->createPayment($dto->toArray(), $customer->gateway_customer_id);
 
-            $creditCardDetails = $this->getDetails($paymentIntegration, 'credit_card');
+            $creditCardDetails = $this->getDetails($paymentIntegration, 'credit-card');
 
             return $this->update($payment->id, $creditCardDetails);
         });
@@ -86,6 +88,7 @@ class PaymentService
     {
         $this->validatePaymentMethod($dto, $paymentType);
         $this->gateway = $this->getGateway($dto->provider, $dto->method);
+
         return $this->customerService->findById($dto->customer_id);
     }
 
@@ -124,15 +127,18 @@ class PaymentService
                     'gateway_payment_id' => $paymentIntegration['gateway_payment_id'],
                     'pix_data' => json_encode($detailsResponse),
                 ];
-                break;
             case 'boleto':
                 return [
                     ...$detailsResponse,
                     'gateway_payment_id' => $paymentIntegration['gateway_payment_id'],
                 ];
+            case 'credit-card':
+                return [
+                    ...$detailsResponse,
+                ];
 
             default:
-                break;
+            throw new Exception('Sem ID de integração, tente novamente mais tarde.');
         }
     }
 }
