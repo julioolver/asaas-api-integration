@@ -13,16 +13,19 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        "customer_id",
-        "amount",
-        "method",
-        "status",
-        "gateway_payment_id",
-        "bank_url",
-        "invoice_url",
-        "pix_data",
-        "card_authorization_number",
-        "due_date"
+        'customer_id',
+        'amount',
+        'method',
+        'status',
+        'gateway_payment_id',
+        'bank_url',
+        'invoice_url',
+        'pix_data',
+        'card_authorization_number',
+        'nosso_numero',
+        'bar_code',
+        'identification_field',
+        'due_date'
     ];
 
     protected $casts = [
@@ -33,7 +36,7 @@ class Payment extends Model
     protected function pixData(): Attribute
     {
         return Attribute::make(
-            get: fn (?string $value) => $value ? json_decode($value, true) : null,
+            get: fn(?string $value) => $value ? json_decode($value, true) : null,
         );
     }
 }
