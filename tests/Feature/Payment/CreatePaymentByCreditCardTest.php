@@ -2,12 +2,9 @@
 
 namespace Tests\Feature\Payment;
 
-use App\Integrations\Payments\Asaas\AsaasCustomerService;
 use App\Models\Customer;
 use App\Repositories\eloquent\EloquentCustomerRepository;
-use App\Services\CustomerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Mockery;
 use Tests\TestCase;
@@ -19,7 +16,7 @@ class CreatePaymentByCreditCardTest extends TestCase
     /**
      * it should be able to create payment by pix.
      */
-    public function CreatePaymentByCreditCard(): void
+    public function testCreatePaymentByCreditCard(): void
     {
         $customerData = [
             'name' => 'Test Customer',
@@ -28,7 +25,7 @@ class CreatePaymentByCreditCardTest extends TestCase
         ];
 
         $customer = Customer::factory()->create();
-        $customer->gateway_customer_id = 'cus_000004886401';
+        $customer->gateway_customer_id = 'cus_000005844687';
 
         $customerService = new EloquentCustomerRepository(new Customer());
 
@@ -36,14 +33,31 @@ class CreatePaymentByCreditCardTest extends TestCase
 
         $response = $this->postJson('/api/customers', $customerData);
 
-        $payloadPix = [
-            "customer_id" => $customerResponse->id,
-            "amount" => 4540.33,
-            "due_date" => "2024-01-15",
-            "method" => 'pix'
+        $payloadCreditCard = [
+            'customer_id' => $customerResponse->id,
+            'amount' => 4540.33,
+            'due_date' => '2024-01-15',
+            'method' => 'credit-card',
+            'document_number' => '34748015039',
+            'billingType' => '34748015039',
+            'credit_card' => [
+                'card_number' => '1234567890123456',
+                'card_holder_name' => 'teste',
+                'expiry_month' => '12',
+                'expiry_year' => '2024',
+                'cvv' => 669
+            ],
+            'holder_info' => [
+                'name' => $customerResponse->name,
+                'email' => $customerResponse->email,
+                'document_number' => '34748015039',
+                'postal_code' => '99150000',
+                'address_number' => '123',
+                'phone' => '5499999999',
+            ]
         ];
 
-        $response = $this->postJson('/api/payments/pix', $payloadPix);
+        $response = $this->postJson('/api/payments/credit-card', $payloadCreditCard);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure([
@@ -75,10 +89,10 @@ class CreatePaymentByCreditCardTest extends TestCase
         $response = $this->postJson('/api/customers', $customerData);
 
         $payloadPix = [
-            "customer_id" => $customerResponse->id,
-            "amount" => 4540.33,
-            "due_date" => "2024-01-15",
-            "method" => 'pix'
+            'customer_id' => $customerResponse->id,
+            'amount' => 4540.33,
+            'due_date' => '2024-01-15',
+            'method' => 'pix'
         ];
 
         $response = $this->postJson('/api/payments/pix', $payloadPix);
@@ -92,14 +106,15 @@ class CreatePaymentByCreditCardTest extends TestCase
 
     public function testErrorValidationCreatePaymentByCreditCard(): void
     {
-        $payloadPix = [
-            "customer_id" => 'invalid_id',
-            "amount" => 4540.33,
-            "due_date" => "2024-01-15",
-            "method" => 'pix'
+        $payload = [
+            'customer_id' => 'invalid_id',
+            'amount' => 4540.33,
+            'due_date' => '2024-01-15',
+            'method' => 'pix',
+            'credit_card' => []
         ];
 
-        $response = $this->postJson('/api/payments/pix', $payloadPix);
+        $response = $this->postJson('/api/payments/pix', $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonStructure([
