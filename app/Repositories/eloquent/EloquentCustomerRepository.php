@@ -17,9 +17,9 @@ class EloquentCustomerRepository implements CustomerRepository
         return $this->model->create($customer);
     }
 
-    public function updatePaymentGatewayId(Customer $customer, string $paymentId): Customer
+    public function updatePaymentGatewayId(Customer $customer, string $gatewayCustomerId): Customer
     {
-        $customer->gateway_payment_id = $paymentId;
+        $customer->gateway_customer_id = $gatewayCustomerId;
 
         $customer->save();
 
