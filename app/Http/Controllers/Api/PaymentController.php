@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\DTOs\Payment\PaymentPixDTO;
 use App\Http\Requests\PaymentCreditCardRequest;
 use App\Http\Requests\PaymentPixRequest;
-use App\Http\Resources\PaymentByPixResource;
+use App\Http\Resources\PaymentResource;
 use App\Services\PaymentService;
 use Illuminate\Http\Response;
 
@@ -33,7 +33,7 @@ class PaymentController extends Controller
 
             $payment = $this->service->processPixPayment($paymentPixDTO);
 
-            return (new PaymentByPixResource($payment))
+            return (new PaymentResource($payment))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
         } catch (\Exception $e) {
@@ -54,7 +54,7 @@ class PaymentController extends Controller
 
             $payment = $this->service->processBilletPayment($paymentPixDTO);
 
-            return (new PaymentByPixResource($payment))
+            return (new PaymentResource($payment))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
         } catch (\Exception $e) {
@@ -90,7 +90,7 @@ class PaymentController extends Controller
 
             $payment = $this->service->processCreditCardPayment($paymentDTO);
 
-            return (new PaymentByPixResource($payment))
+            return (new PaymentResource($payment))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
         } catch (\Exception $e) {
