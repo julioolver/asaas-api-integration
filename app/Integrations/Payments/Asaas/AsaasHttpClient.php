@@ -30,7 +30,7 @@ class AsaasHttpClient
             $response = $this->client->get("{$this->baseURI}/{$uri}", $uri, $options);
 
             return $this->responseTratament($response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }
@@ -41,17 +41,6 @@ class AsaasHttpClient
 
         return $this->responseTratament($response);
     }
-
-    public function put($uri, array $data)
-    {
-        return $this->client->put("{$this->baseURI}/{$uri}", ['json' => $data]);
-    }
-
-    public function delete($uri, array $data)
-    {
-        return $this->client->delete("{$this->baseURI}/{$uri}", ['json' => $data]);
-    }
-
     private function responseTratament(Response $response)
     {
         try {
@@ -61,11 +50,15 @@ class AsaasHttpClient
 
             $errorDetails = $response->json();
 
+            if (isset($errorDetails['errors'])) {
+                $errorDetails = $errorDetails['errors'];
+            }
+
             throw new Exception(
-                'Erro na comunicação com a API externa: ' . json_encode($errorDetails),
+                'Erro na comunicação com a API externa: ' . json_encode($errorDetails, JSON_UNESCAPED_UNICODE),
                 $response->status()
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }

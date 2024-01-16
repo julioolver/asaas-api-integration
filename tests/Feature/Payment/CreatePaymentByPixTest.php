@@ -12,7 +12,7 @@ use Illuminate\Http\Response;
 use Mockery;
 use Tests\TestCase;
 
-class CreatePaymentByPìxTest extends TestCase
+class CreatePaymentByPixTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -21,23 +21,13 @@ class CreatePaymentByPìxTest extends TestCase
      */
     public function testCreatePaymentByPix(): void
     {
-        $customerData = [
-            'name' => 'Test Customer',
-            'email' => 'customer@example.com',
-            'document_number' => '34748015039' // utilizado https://www.4devs.com.br/gerador_de_cpf
-        ];
-
         $customer = Customer::factory()->create();
-        $customer->gateway_customer_id = 'cus_000004886401';
+        $customer->document_number = '34748015039'; // utilizado https://www.4devs.com.br/gerador_de_cpf
 
-        $customerService = new EloquentCustomerRepository(new Customer());
-
-        $customerResponse = $customerService->create($customer->toArray());
-
-        $response = $this->postJson('/api/customers', $customerData);
+        $customerResponse = $this->postJson('/api/customers/integrate', $customer->toArray())->json();
 
         $payloadPix = [
-            "customer_id" => $customerResponse->id,
+            "customer_id" => $customerResponse['data']['id'],
             "amount" => 4540.33,
             "due_date" => "2024-01-15",
             "method" => 'pix'

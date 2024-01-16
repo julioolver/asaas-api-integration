@@ -48,8 +48,8 @@ class AsaasPaymentPixService extends AsaasHttpClient implements PaymentGatewayIn
                 'pix_key' => $detailPixPayment['payload'],
                 'due_date' => $detailPixPayment['expirationDate']
             ];
-        } catch (\Exception $e) {
-            throw $e->getMessage();
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

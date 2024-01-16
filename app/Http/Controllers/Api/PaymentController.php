@@ -8,10 +8,10 @@ use App\DTOs\Payment\PaymentByBilletDTO;
 use App\DTOs\Payment\PaymentCreditCardDTO;
 use App\Http\Controllers\Controller;
 use App\DTOs\Payment\PaymentPixDTO;
+use App\Http\Requests\PaymentCreditCardRequest;
 use App\Http\Requests\PaymentPixRequest;
 use App\Http\Resources\PaymentByPixResource;
 use App\Services\PaymentService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PaymentController extends Controller
@@ -65,7 +65,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function processPaymentByCreditCard(PaymentPixRequest $request)
+    public function processPaymentByCreditCard(PaymentCreditCardRequest $request)
     {
         try {
             $validatedData = $request->validated();
@@ -80,13 +80,14 @@ class PaymentController extends Controller
             );
 
             $paymentDTO = new PaymentCreditCardDTO(
-                amount: $validatedData['amount'],
                 customer_id: $validatedData['customer_id'],
-                due_date: $validatedData['customer_id'],
+                amount: $validatedData['amount'],
+                due_date: $validatedData['due_date'],
                 method: $validatedData['method'],
                 creditCard: $creditCardDTO,
                 holderInfo: $cardHolderInfoDTO
             );
+
             $payment = $this->service->processCreditCardPayment($paymentDTO);
 
             return (new PaymentByPixResource($payment))

@@ -42,8 +42,8 @@ class AsaasPaymentBilletService extends AsaasHttpClient implements PaymentGatewa
                 "bank_url" => $payment['bank_url'],
                 "invoice_url" => $payment['invoice_url']
             ];
-        } catch (\Exception $e) {
-            throw $e->getMessage();
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 
