@@ -29,7 +29,7 @@ class CreatePaymentByPixTest extends TestCase
         $payloadPix = [
             "customer_id" => $customerResponse['data']['id'],
             "amount" => 4540.33,
-            "due_date" => "2024-01-15",
+            "due_date" => date('Y-m-d'),
             "method" => 'pix'
         ];
 
@@ -75,8 +75,8 @@ class CreatePaymentByPixTest extends TestCase
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         $response->assertJsonStructure([
-           'success',
-           'message'
+            'success',
+            'message'
         ]);
     }
 
@@ -107,8 +107,8 @@ class CreatePaymentByPixTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonStructure([
-           'errors',
-           'message'
+            'errors',
+            'message'
         ]);
     }
 }

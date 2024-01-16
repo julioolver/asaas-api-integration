@@ -24,7 +24,7 @@ class CreatePaymentByBilletTest extends TestCase
         $payloadPix = [
             "customer_id" => $customerResponse['data']['id'],
             "amount" => 660.33,
-            "due_date" => "2024-01-15",
+            'due_date' => date('Y-m-d'),
             "method" => 'boleto'
         ];
 

@@ -56,11 +56,8 @@ class PaymentService
 
     public function processCreditCardPayment(PaymentCreditCardDTO $dto)
     {
-        $currentYear = (int) date('Y');
-
-        if ($currentYear > (int) $dto->creditCard->expiry_year || (int) $dto->creditCard->expiry_month > 12) {
-            throw new Exception('Data do cartão de crédito incorreta.', 422);
-        }
+        $dto->creditCard->card_number = str_replace(' ', '', $dto->creditCard->card_number);
+        $this->validateCreditCardInfo($dto);
 
         $dataForDb = clone $dto;
 
@@ -92,7 +89,18 @@ class PaymentService
         return $this->customerService->findById($dto->customer_id);
     }
 
+    private function validateCreditCardInfo(PaymentCreditCardDTO $dto)
+    {
+        $currentYear = (int) date('Y');
 
+        if ($currentYear > (int) $dto->creditCard->expiry_year || (int) $dto->creditCard->expiry_month > 12) {
+            throw new Exception('Data do cartão de crédito incorreta.', 422);
+        }
+
+        if (strlen($dto->creditCard->card_number) !== 16) {
+            throw new Exception('Número do cartão de crédito incorreto.', 422);
+        }
+    }
     private function getGateway(string $provider, string $type): PaymentGatewayInterface
     {
         return $this->gatewayFactory->handle($provider, $type);
@@ -138,7 +146,7 @@ class PaymentService
                 ];
 
             default:
-            throw new Exception('Sem ID de integração, tente novamente mais tarde.');
+                throw new Exception('Sem ID de integração, tente novamente mais tarde.');
         }
     }
 }

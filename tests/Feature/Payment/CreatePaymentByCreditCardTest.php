@@ -26,7 +26,7 @@ class CreatePaymentByCreditCardTest extends TestCase
         $payloadCreditCard = [
             'customer_id' => $customerResponse['data']['id'],
             'amount' => 4540.33,
-            'due_date' => '2024-01-15',
+            'due_date' => date('Y-m-d'),
             'method' => 'credit-card',
             'document_number' => '34748015039',
             'billingType' => '34748015039',
