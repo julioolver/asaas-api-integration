@@ -70,6 +70,11 @@ Para rodar os testes criados, basta executar:
 ./vendor/bin/sail artisan test
 ```
 
+## TODO
+
+Deixo anotado aqui, um TODO para ser feito ainda dentro deste projeto:
+- Adicionar Swagger para documentação das rotas de entrada e saída
+- Hoje estou reotnrando os erros da API externa em um json stringfy, criar exception do Laravel para retornar um JSON formatado.
 ## Autores
 
 * **Julio Cesar Oliveira da Silva**
