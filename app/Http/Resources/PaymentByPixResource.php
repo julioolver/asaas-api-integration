@@ -22,6 +22,7 @@ class PaymentByPixResource extends JsonResource
             'status' => $this->status,
             'bank_url' => $this->bank_url,
             'invoice_url' => $this->invoice_url,
+            'bar_code' => $this->bar_code,
         ];
     }
 }

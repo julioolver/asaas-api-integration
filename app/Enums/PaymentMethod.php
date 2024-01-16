@@ -6,5 +6,5 @@ enum PaymentMethod: string
 {
     case PIX = 'pix';
     case BOLETO = 'boleto';
-    case CREDIT_CARD = 'credit_card';
+    case CREDIT_CARD = 'credit-card';
 }

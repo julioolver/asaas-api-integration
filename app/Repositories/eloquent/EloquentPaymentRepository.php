@@ -12,7 +12,7 @@ class EloquentPaymentRepository implements PaymentRepository
     {
     }
 
-    public function processPixPayment(array $payload): Payment
+    public function createPayment(array $payload): Payment
     {
         return $this->model->create($payload);
     }

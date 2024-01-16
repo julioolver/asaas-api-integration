@@ -7,12 +7,10 @@ use App\Enums\PaymentMethod;
 use App\Factory\PaymentGatewayFactory;
 use App\Integrations\Payments\Asaas\AsaasPaymentPixService;
 use App\Integrations\Payments\Contracts\CustomerGatewayInterface;
-use App\Integrations\Payments\Contracts\PaymentGatewayInterface;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Repositories\contracts\CustomerRepository;
 use App\Repositories\contracts\PaymentRepository;
-use App\Repositories\eloquent\EloquentCustomerRepository;
 use App\Services\CustomerService;
 use App\Services\PaymentService;
 use Exception;
@@ -52,7 +50,7 @@ class PaymentServiceTest extends TestCase
         $fakePayment = new Payment($fakePaymentPixDTO->toArray());
         $fakePayment->id = 1;
 
-        $paymentRepository->shouldReceive("processPixPayment")
+        $paymentRepository->shouldReceive("createPayment")
             ->once()
             ->andReturn($fakePayment);
 
@@ -108,7 +106,7 @@ class PaymentServiceTest extends TestCase
 
         $fakePayment = new Payment($fakePaymentPixDTO->toArray());
 
-        $paymentRepository->shouldReceive("processPixPayment")
+        $paymentRepository->shouldReceive("createPayment")
             ->once()
             ->andReturn($fakePayment);
 
