@@ -26,6 +26,17 @@ class CustomerController extends Controller
      *     summary="Cria um cliente no sistema",
      *     description="Cria um cliente na base de dados do sistema",
      *     tags={"customers"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do novo item",
+     *         @OA\JsonContent(
+     *             required={"name","email","phone","document_number"},
+     *             @OA\Property(property="name", type="string", example="Nome do cliente"),
+     *             @OA\Property(property="email", type="string", example="teste@teste1.com"),
+     *             @OA\Property(property="phone", type="string", example="49999999999"),
+     *             @OA\Property(property="document_number", type="string", example="00000000000"),
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="Retorna o customer criado",
@@ -62,6 +73,17 @@ class CustomerController extends Controller
      *     summary="Cria um cliente com integração externa",
      *     description="Cria um cliente e realiza integração com API de pagamentos",
      *     tags={"customers"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do novo item",
+     *         @OA\JsonContent(
+     *             required={"name","email","phone","document_number"},
+     *             @OA\Property(property="name", type="string", example="Nome do cliente"),
+     *             @OA\Property(property="email", type="string", example="teste@teste1.com"),
+     *             @OA\Property(property="phone", type="string", example="49999999999"),
+     *             @OA\Property(property="document_number", type="string", example="00000000000"),
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="Retorna o customer criado",

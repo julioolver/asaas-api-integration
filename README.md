@@ -58,9 +58,27 @@ Para criar as tabelas do sistema no banco de dados, basta executar o comando:
 ./vendor/bin/sail artisan migrate
 ```
 
+Caso seja necessário instalar as dependências novamente:
+
+```
+./vendor/bin/sail composer install
+```
+
 Após isso, o sistema se torna acessível via:
 
 `http://localhost:8085`
+
+## Rodar documentação da API
+
+Certifique-se que todas as dependências do projeto estejam atualizadas e instaladas:
+
+```
+./vendor/bin/sail composer install
+```
+
+Após isso, acesse a seguinte URL, onde até o momento existe a documentação via Swagger dos customers:
+
+`http://localhost:8085/api/doc#/`
 
 ## Rodando os testes
 
@@ -72,8 +90,8 @@ Para rodar os testes criados, basta executar:
 
 ## TODO
 
-Deixo anotado aqui, um TODO para ser feito ainda dentro deste projeto:
-- Adicionar Swagger para documentação das rotas de entrada e saída
+Deixo anotado aqui, com um TODO para ser feito ainda dentro deste projeto:
+- Adicionar Swagger para documentação das rotas de entrada e saída de pagamentos (Customers já existe - em andamento)
 - Hoje estou reotnrando os erros da API externa em um json stringfy, criar exception do Laravel para retornar um JSON formatado.
 ## Autores
 

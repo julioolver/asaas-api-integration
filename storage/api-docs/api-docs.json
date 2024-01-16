@@ -9,6 +9,63 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/customers": {
+            "post": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Cria um cliente no sistema",
+                "description": "Cria um cliente na base de dados do sistema",
+                "operationId": "747630c757eae4c38404384330e68c57",
+                "requestBody": {
+                    "description": "Dados do novo item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "phone",
+                                    "document_number"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nome do cliente"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "teste@teste1.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "49999999999"
+                                    },
+                                    "document_number": {
+                                        "type": "string",
+                                        "example": "00000000000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retorna o customer criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/customerObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/customers/integrate": {
             "post": {
                 "tags": [
@@ -17,6 +74,41 @@
                 "summary": "Cria um cliente com integração externa",
                 "description": "Cria um cliente e realiza integração com API de pagamentos",
                 "operationId": "fd148751eb17241f568af13d4d7fc739",
+                "requestBody": {
+                    "description": "Dados do novo item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "phone",
+                                    "document_number"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nome do cliente"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "teste@teste1.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "49999999999"
+                                    },
+                                    "document_number": {
+                                        "type": "string",
+                                        "example": "00000000000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "Retorna o customer criado",
