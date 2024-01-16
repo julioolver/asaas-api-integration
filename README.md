@@ -1,4 +1,4 @@
-# Projeto Laravel de Vendas de Cursos
+# Projeto para teste vega checkout/perfectpay back-end
 
 Este projeto Laravel é uma aplicação robusta que segue as melhores práticas de design e arquitetura de software, aplicando SOLID, clean code, calistenia de objetos, entre outros conceitos e patterns conhecidos (como Adapters e Factory Pattern). O projeto utiliza um padrão de design com Services e Repositories para abstrair a lógica de negócios e a camada de acesso a dados. Além disso, conta com Factories, DTOs, Enums, Contacts/Interfaces e testes unitários e de feature # Projeto de teste para Vega Checkout/Perfect Pay
 A integração com APIs externas é gerenciada no diretório de Integrações, e os testes unitários e de feature garantem a confiabilidade e qualidade do código entre camadas.
