@@ -16,26 +16,16 @@ class CreatePaymentByBilletTest extends TestCase
      */
     public function testCreatePaymentByBillet(): void
     {
-        $customerData = [
-            'name' => 'Test Customer',
-            'email' => 'customer@example.com',
-            'document_number' => '34748015039' // utilizado https://www.4devs.com.br/gerador_de_cpf
-        ];
-
         $customer = Customer::factory()->create();
-        $customer->gateway_customer_id = 'cus_000004886401';
+        $customer->document_number = '34748015039'; // utilizado https://www.4devs.com.br/gerador_de_cpf
 
-        $customerService = new EloquentCustomerRepository(new Customer());
-
-        $customerResponse = $customerService->create($customer->toArray());
-
-        $response = $this->postJson('/api/customers', $customerData);
+        $customerResponse = $this->postJson('/api/customers/integrate', $customer->toArray())->json();
 
         $payloadPix = [
-            'customer_id' => $customerResponse->id,
-            'amount' => 4540.33,
-            'due_date' => '2024-01-15',
-            'method' => 'boleto'
+            "customer_id" => $customerResponse['data']['id'],
+            "amount" => 660.33,
+            "due_date" => "2024-01-15",
+            "method" => 'boleto'
         ];
 
         $response = $this->postJson('/api/payments/billet', $payloadPix);
@@ -50,6 +40,7 @@ class CreatePaymentByBilletTest extends TestCase
                 'status',
                 'bank_url',
                 'invoice_url',
+                'bar_code'
             ]
         ]);
     }

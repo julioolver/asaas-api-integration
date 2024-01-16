@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('invoice_url')->nullable();
             $table->text('pix_data')->nullable();
             $table->string('card_authorization_number')->nullable();
+            $table->string('nosso_numero')->nullable();
+            $table->string('bar_code')->nullable();
+            $table->string('identification_field')->nullable();
             $table->date('due_date')->nullable();
             $table->timestamps();
         });
