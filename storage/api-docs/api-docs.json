@@ -1,0 +1,116 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "vega checkout test API",
+        "description": "Esse é um desafio/teste PHP com foco em Laravel",
+        "contact": {
+            "email": "juliocesar.olver@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/customers/integrate": {
+            "post": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Cria um cliente com integração externa",
+                "description": "Cria um cliente e realiza integração com API de pagamentos",
+                "operationId": "fd148751eb17241f568af13d4d7fc739",
+                "responses": {
+                    "201": {
+                        "description": "Retorna o customer criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/customerObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/customers/by-email": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Customers",
+                "description": "Get a customer by e-mail",
+                "operationId": "86ec79d8d48fed4e138597868bb68846",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Filtrar um customer por e-mail",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna um único customer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/customerObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "customerBase": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "9999999999"
+                    },
+                    "gateway_customer_id": {
+                        "type": "string",
+                        "example": "cus_99999999"
+                    }
+                },
+                "type": "object"
+            },
+            "customerObject": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/customerBase"
+                    }
+                },
+                "type": "object"
+            },
+            "customerArray": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/customerBase"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
