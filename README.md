@@ -23,11 +23,13 @@ A seguir, passo a passo para rodar o sistema em ambiente local.
 
 Instruções para configurar e instalar o projeto:
 
-Fazer uma cópia do .env.exemple para .env, preenchendo com as credenciais obrigatórias (asaas_key).
+-   Docker configurado no sistema operacional
+
+-   Fazer uma cópia do .env.exemple para .env, preenchendo com as credenciais obrigatórias (asaas_key).
 
 ### Instalação
 
-Para emular o ambiente de desenvolvimento, foi usado o Docker e Docker-compose, em conjunto com o Sail do Laravel.
+Para emular o ambiente de desenvolvimento, foi utilizado o Docker e Docker-compose, em conjunto com o Sail do Laravel.
 
 ```
 docker run --rm \
@@ -42,21 +44,18 @@ ou
 
 ```
 docker-compose up --build
-
 ```
 
 se preferir (após instalar as dependências do projeto):
 
 ```
 ./vendor/bin/sail up
-
 ```
 
 Para criar as tabelas do sistema no banco de dados, basta executar o comando:
 
 ```
 ./vendor/bin/sail artisan migrate
-
 ```
 
 Após isso, o sistema se torna acessível via:
@@ -69,7 +68,6 @@ Para rodar os testes criados, basta executar:
 
 ```
 ./vendor/bin/sail artisan test
-
 ```
 
 ## Autores
@@ -78,4 +76,4 @@ Para rodar os testes criados, basta executar:
 
 ## Agradecimentos
 
-* Agradecimentos a oportunidade de fazer parte do teste, sempre aprimorando meus conhecimentos e realizando implementações inovadoras.
+* Agradeço a oportunidade de fazer o teste, pois com isso, um novo desafio, sempre aprimoro meus conhecimentos, fazendo algo novo ou estudando um conceito para aplicar de forma diferente, sempre pensando em evoluir.
