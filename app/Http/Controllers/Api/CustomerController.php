@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
+
 class CustomerController extends Controller
 {
 
@@ -19,6 +20,30 @@ class CustomerController extends Controller
     {
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/customers",
+     *     summary="Cria um cliente no sistema",
+     *     description="Cria um cliente na base de dados do sistema",
+     *     tags={"customers"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do novo item",
+     *         @OA\JsonContent(
+     *             required={"name","email","phone","document_number"},
+     *             @OA\Property(property="name", type="string", example="Nome do cliente"),
+     *             @OA\Property(property="email", type="string", example="teste@teste1.com"),
+     *             @OA\Property(property="phone", type="string", example="49999999999"),
+     *             @OA\Property(property="document_number", type="string", example="00000000000"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Retorna o customer criado",
+     *         @OA\JsonContent(ref="#/components/schemas/customerObject"),
+     *     )
+     * )
+     */
     public function store(CreateCustomer $request)
     {
         try {
@@ -42,6 +67,30 @@ class CustomerController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/customers/integrate",
+     *     summary="Cria um cliente com integração externa",
+     *     description="Cria um cliente e realiza integração com API de pagamentos",
+     *     tags={"customers"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do novo item",
+     *         @OA\JsonContent(
+     *             required={"name","email","phone","document_number"},
+     *             @OA\Property(property="name", type="string", example="Nome do cliente"),
+     *             @OA\Property(property="email", type="string", example="teste@teste1.com"),
+     *             @OA\Property(property="phone", type="string", example="49999999999"),
+     *             @OA\Property(property="document_number", type="string", example="00000000000"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Retorna o customer criado",
+     *         @OA\JsonContent(ref="#/components/schemas/customerObject"),
+     *     )
+     * )
+     */
     public function storeAndIntegrate(CreateCustomer $request)
     {
         try {
@@ -65,6 +114,28 @@ class CustomerController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/customers/by-email",
+     *     summary="Customers",
+     *     description="Get a customer by e-mail",
+     *     tags={"customers"},
+     *     @OA\Parameter(
+     *         name="email",
+     *         description="Filtrar um customer por e-mail",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retorna um único customer",
+     *         @OA\JsonContent(ref="#/components/schemas/customerObject"),
+     *     )
+     * )
+     */
     public function showByEmail(Request $request)
     {
         try {
@@ -85,7 +156,7 @@ class CustomerController extends Controller
                 'error' => 'Dados não encontrados',
                 'message' => $modelException->getMessage()
             ], Response::HTTP_NOT_FOUND);
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro interno de servidor',
