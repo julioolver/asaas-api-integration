@@ -1,6 +1,6 @@
-# Projeto para teste vega checkout/perfectpay back-end
+# Projeto para integração do asaas com PHP e Laravel
 
-Este projeto Laravel é uma aplicação robusta que segue as melhores práticas de design e arquitetura de software, aplicando SOLID, clean code, calistenia de objetos, entre outros conceitos e patterns conhecidos (como Adapters e Factory Pattern). O projeto utiliza um padrão de design com Services e Repositories para abstrair a lógica de negócios e a camada de acesso a dados. Além disso, conta com Factories, DTOs, Enums, Contacts/Interfaces e testes unitários e de feature # Projeto de teste para Vega Checkout/Perfect Pay
+Este projeto Laravel é uma aplicação robusta que segue as melhores práticas de design e arquitetura de software, aplicando SOLID, clean code, calistenia de objetos, entre outros conceitos e patterns conhecidos (como Adapters e Factory Pattern). O projeto utiliza um padrão de design com Services e Repositories para abstrair a lógica de negócios e a camada de acesso a dados. Além disso, conta com Factories, DTOs, Enums, Contacts/Interfaces e testes unitários e de feature.
 A integração com APIs externas é gerenciada no diretório de Integrações, e os testes unitários e de feature garantem a confiabilidade e qualidade do código entre camadas.
 
 ## Estrutura do Projeto
@@ -96,7 +96,3 @@ Deixo anotado aqui, com um TODO para ser feito ainda dentro deste projeto:
 ## Autores
 
 * **Julio Cesar Oliveira da Silva**
-
-## Agradecimentos
-
-* Agradeço a oportunidade de fazer o teste, pois com isso, um novo desafio, sempre aprimoro meus conhecimentos, fazendo algo novo ou estudando um conceito para aplicar de forma diferente, sempre pensando em evoluir.
